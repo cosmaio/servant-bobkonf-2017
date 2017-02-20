@@ -1,6 +1,9 @@
 # Requirements for the Servant tutorial at Bobkonf 2017
 
-I will be using:
+If you don't have Haskell/GHC installed yet, then start from the
+[Haskell Platform 8.0.2 Core][HP].
+
+For the tutorial, I will be using:
 
 - GHC 8.0.2
 - Servant 0.9.x
@@ -20,4 +23,5 @@ then everything should be fine. If you want to use other versions
 of packages (e.g. Servant 0.10), that's probably going to be fine,
 but it's your risk to take.
 
+[HP]: https://www.haskell.org/platform
 [LTS8]: https://www.stackage.org/lts-8.1
