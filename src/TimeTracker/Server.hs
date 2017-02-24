@@ -1,5 +1,8 @@
 module TimeTracker.Server where
 
+import Control.Concurrent.STM
+import Control.Monad.IO.Class
+import Data.Time
 import Data.Proxy
 import Network.Wai.Handler.Warp
 
@@ -9,19 +12,40 @@ import Servant.Server
 import TimeTracker.API
 import TimeTracker.Library
 
-handleStart :: Handler NoContent
-handleStart = return NoContent
+handleStart :: TVar TimeTrackerStatus -> Handler NoContent
+handleStart statusVar = liftIO $ do
+  now <- getCurrentTime
+  atomically $ modifyTVar statusVar (startTracking now)
+  return NoContent
 
-handleStop :: Handler NoContent
-handleStop = return NoContent
+handleStop :: TVar TimeTrackerStatus -> Handler NoContent
+handleStop statusVar = liftIO $ do
+  now <- getCurrentTime
+  atomically $ modifyTVar statusVar (stopTracking now)
+  return NoContent
 
-handleStatus :: Handler TimeTrackerStatus
-handleStatus = return initialTimeTrackerStatus
+handleStatus :: TVar TimeTrackerStatus -> Handler TimeTrackerStatus
+handleStatus statusVar = liftIO (readTVarIO statusVar)
 
-timeTrackerServer :: Server TimeTrackerAPI
-timeTrackerServer =
-  handleStart :<|> handleStop :<|> handleStatus
+handleSet :: TVar TimeTrackerStatus -> NominalDiffTime -> Handler NoContent
+handleSet _ _ = return NoContent
+
+timeTrackerServer :: TVar TimeTrackerStatus -> Server TimeTrackerAPI
+timeTrackerServer statusVar = startStopServer statusVar :<|> statusSetServer statusVar
+
+startStopServer statusVar =
+       handleStart  statusVar
+  :<|> handleStop   statusVar
+
+statusSetServer statusVar =
+       handleStatus statusVar
+  :<|> handleSet    statusVar
 
 serverMain :: IO ()
-serverMain =
-  run 8083 (serve (Proxy :: Proxy TimeTrackerAPI) timeTrackerServer)
+serverMain = do
+  statusVar <- newTVarIO initialTimeTrackerStatus
+  run 8083
+    (serve
+      (Proxy :: Proxy TimeTrackerAPI)
+      (timeTrackerServer statusVar)
+    )
