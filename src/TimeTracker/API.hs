@@ -5,6 +5,6 @@ import Servant.API
 import TimeTracker.Library
 
 type TimeTrackerAPI =
-       "start"  :> Post '[JSON] NoContent
-  :<|> "stop"   :> Post '[JSON] NoContent
+       "start"  :> PostNoContent '[JSON] NoContent
+  :<|> "stop"   :> PostNoContent '[JSON] NoContent
   :<|> "status" :> Get '[JSON] TimeTrackerStatus
