@@ -1,22 +1,24 @@
 {-# LANGUAGE DeriveAnyClass #-}
 module TimeTracker.Library where
 
-import Data.Aeson
-import Data.Swagger
+-- import Data.Aeson
+-- import Data.Swagger
 import Data.Time
-import GHC.Generics
+-- import GHC.Generics
 
 data TimeTrackerStatus =
   TimeTrackerStatus
     { ttsTimeTracked :: NominalDiffTime
     , ttsMode        :: TimeTrackerMode
     }
-  deriving (Show, Generic, ToJSON, FromJSON, ToSchema)
+  deriving (Show)
+  -- deriving (Show, Generic, ToJSON, FromJSON, ToSchema)
 
 data TimeTrackerMode =
     Off
   | On { ttmSince :: UTCTime }
-  deriving (Show, Generic, ToJSON, FromJSON, ToSchema)
+  deriving (Show)
+  -- deriving (Show, Generic, ToJSON, FromJSON, ToSchema)
 
 initialTimeTrackerStatus :: TimeTrackerStatus
 initialTimeTrackerStatus =
