@@ -11,13 +11,16 @@ data TimeTrackerStatus =
     { ttsTimeTracked :: NominalDiffTime
     , ttsMode        :: TimeTrackerMode
     }
-  deriving (Show, Generic, ToJSON)
+  deriving (Show, Generic)
+
+instance ToJSON TimeTrackerStatus
+instance FromJSON TimeTrackerStatus
   -- deriving (Show, Generic, ToJSON, FromJSON, ToSchema)
 
 data TimeTrackerMode =
     Off
   | On { ttmSince :: UTCTime }
-  deriving (Show, Generic, ToJSON)
+  deriving (Show, Generic, ToJSON, FromJSON)
   -- deriving (Show, Generic, ToJSON, FromJSON, ToSchema)
 
 initialTimeTrackerStatus :: TimeTrackerStatus
